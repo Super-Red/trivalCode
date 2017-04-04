@@ -1,5 +1,11 @@
 #-*-encoding:utf-8-*-
 
+"""
+Author:     Super_Red
+Date:       4/3/2017
+Describe:   help weibo download hotel datas from "http://www.dianping.com"
+"""
+
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -15,9 +21,9 @@ _session = requests.session()
 _session.headers.update(Default_Header)
 
 def Main():
-    BASIC_URL = "http://www.dianping.com/search/keyword/15/0_%E9%85%92%E5%BA%97"
+    BASIC_URL = "http://www.dianping.com/search/keyword/130/0_%E9%85%92%E5%BA%97"
     count = 0
-    for i in range(508):
+    for i in range(139):
         url = BASIC_URL + "/p" + str(i+1)
         soup = BeautifulSoup(_session.get(url).text, "html.parser")
         hotelList = soup.findAll("div", {"class":"txt"})
@@ -26,7 +32,7 @@ def Main():
             meanPriceObj = hotelList[i].findAll("a", {"class":"mean-price"})[0]
             if not meanPriceObj.b:
                 continue
-            avePrice = meanPriceObj.b.text
+            avePrice = meanPriceObj.b.text[1:]
             hotelID = meanPriceObj["href"].replace("/shop/", "")
             hotelName = hotelList[i].findAll("h4")[0].text
             hotelStart = startList[i]
@@ -45,7 +51,7 @@ def findComment(hotelID):
     return commentList
 
 def writeListToFile(data):
-    with open("weiboXiamen.csv", "a", encoding="utf-8") as file:
+    with open("weiboZhangzhou.csv", "a", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow(data)
 
